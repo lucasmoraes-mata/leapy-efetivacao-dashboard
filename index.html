@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leapy - Efetivacao</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f0f2f5;color:#1d1d1f;font-size:14px}
+nav{position:sticky;top:0;z-index:100;background:#1e293b;display:flex;align-items:center;padding:0 24px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.logo{font-size:17px;font-weight:800;color:#60a5fa;padding:15px 18px 15px 0;border-right:1px solid #334155;margin-right:4px}
+.nb{padding:15px 20px;font-size:13px;font-weight:500;color:#94a3b8;cursor:pointer;border-bottom:3px solid transparent}
+.nb:hover{color:#e2e8f0}.nb.on{color:#fff;border-bottom-color:#3b82f6}
+.pg{display:none}.pg.on{display:block}
+.hd{background:#fff;border-bottom:1px solid #e5e7eb;padding:18px 30px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.hd h1{font-size:17px;font-weight:700;color:#1e293b}
+.hd p{font-size:12px;color:#64748b;margin-top:3px;line-height:1.5;max-width:650px}
+.tag{border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;flex-shrink:0}
+.tg{background:#dcfce7;color:#166534}.tb{background:#dbeafe;color:#1e40af}
+.wrap{max-width:1260px;margin:0 auto;padding:22px 30px}
+.info{background:#fff;border-left:4px solid #10b981;border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:18px;font-size:12px;color:#374151;line-height:1.6}
+.info.bl{border-left-color:#3b82f6}
+.info b{color:#1e293b}
+.excl{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 16px;margin-bottom:18px;font-size:12px;color:#64748b}
+.excl-t{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#94a3b8;margin-bottom:8px}
+.excl-r{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:4px 10px;display:flex;align-items:center;gap:6px}
+.chip span{padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700;font-family:monospace}
+.cr{background:#fee2e2;color:#b91c1c}.co{background:#fef3c7;color:#92400e}.cp{background:#ede9fe;color:#6d28d9}
+.krow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.kcard{background:#fff;border-radius:8px;padding:18px 20px;border:1px solid #e5e7eb}
+.kcard .kl{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.kcard .kv{font-size:28px;font-weight:800;line-height:1}
+.kcard .ks{font-size:11px;color:#94a3b8;margin-top:4px}
+.vb .kv{color:#2563eb}.vg .kv{color:#16a34a}.va .kv{color:#d97706}.vs .kv{color:#475569}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.card{background:#fff;border-radius:8px;padding:20px;border:1px solid #e5e7eb}
+.card.full{grid-column:1/-1}
+.card h3{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+canvas{max-height:260px}
+.fn{font-size:10px;color:#94a3b8;margin-top:8px}
+.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tab{padding:4px 12px;border-radius:16px;border:1px solid #e2e8f0;font-size:11px;cursor:pointer;background:#fff;color:#64748b}
+.tab.on{background:#2563eb;color:#fff;border-color:#2563eb}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:7px 10px;font-size:10px;text-transform:uppercase;color:#94a3b8;border-bottom:1px solid #e5e7eb;white-space:nowrap}
+td{padding:7px 10px;border-bottom:1px solid #f1f5f9}
+tr:hover td{background:#f8fafc}
+.bx{display:inline-block;padding:1px 7px;border-radius:12px;font-size:11px;font-weight:700}
+.bh{background:#dcfce7;color:#166534}.bm{background:#fef9c3;color:#92400e}
+.bl2{background:#fee2e2;color:#b91c1c}.bn{background:#f1f5f9;color:#475569}
+.bef{background:#dcfce7;color:#166534}.bco{background:#f1f5f9;color:#475569}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.tc{background:#fff;border-radius:8px;border:2px solid #e5e7eb;padding:16px 18px;cursor:pointer;transition:border-color .15s}
+.tc:hover{border-color:#60a5fa}.tc.on{border-color:#3b82f6;background:#eff6ff}
+.tclb{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.tcv{font-size:26px;font-weight:800;line-height:1}
+.tcs{font-size:11px;color:#94a3b8;margin-top:4px}
+.det{display:none}.det.on{display:block}
+.dsm{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.dst{background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:9px 14px}
+.dst strong{display:block;font-size:18px;font-weight:800;color:#1e293b}
+.dst span{font-size:10px;color:#94a3b8}
+.d2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.sb{width:100%;padding:7px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:12px;margin-bottom:10px;outline:none}
+.sb:focus{border-color:#3b82f6}
+.asc{max-height:400px;overflow-y:auto}
+tr.er td{background:#f0fdf4}
+tr.er:hover td{background:#dcfce7}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">leapy</div>
+  <div class="nb on" onclick="sp('p1',this)">Taxa de Efetivação</div>
+  <div class="nb" onclick="sp('p2',this)">Por Trimestre</div>
+</nav>
+
+<div class="pg on" id="p1">
+  <div class="hd">
+    <div>
+      <h1>Taxa de Efetiva&#231;&#227;o </h1>
+      <p>Apenas jovens que j&#225; conclu&#237;ram a jornada. Em andamento exclu&#237;dos do denominador.</p>
+    </div>
+    <span class="tag tg">Conclu&#237;do + Efetivado</span>
+  </div>
+  <div class="wrap">
+    <div class="excl">
+      <div class="excl-t">Exclu&#237;dos de todas as an&#225;lises</div>
+      <div class="excl-r">
+        <div class="chip"><span class="cr">cancelado</span> 318 jovens</div>
+        <div class="chip"><span class="cr">desistiu</span> 176 jovens</div>
+        <div class="chip"><span class="co">nao_iniciado / pausado / ferias / sem status</span> 51 jovens</div>
+        <div class="chip"><span class="cp">Grupo Botic&#225;rio</span> empresa exclu&#237;da</div>
+        <div class="chip"><span class="cp">Mercado Livre</span> empresa exclu&#237;da</div>
+        <div class="chip" style="color:#1e293b;font-weight:600">Base ajustada: 1.133 jovens</div>
+      </div>
+    </div>
+    <div class="info">
+      <b>Taxa (35,2%):</b> dos 566 jovens que j&#225; encerraram o programa, 199 foram efetivados.
+      Os 567 em andamento s&#227;o exclu&#237;dos do denominador &mdash; quando terminarem, atualizam essa taxa.
+      Taxa macro seria 17,6% se inclu&#237;ssemos os em andamento.
+    </div>
+    <div class="krow">
+      <div class="kcard vb"><div class="kl">Com desfecho</div><div class="kv">566</div><div class="ks">concluido (367) + efetivado (199)</div></div>
+      <div class="kcard vg"><div class="kl">Efetivados</div><div class="kv">199</div><div class="ks">confirmados pelas empresas</div></div>
+      <div class="kcard va"><div class="kl">Taxa</div><div class="kv">35,2%</div><div class="ks">efetivados / com desfecho</div></div>
+      <div class="kcard vs"><div class="kl">Em andamento</div><div class="kv">567</div><div class="ks">exclu&#237;dos do denominador</div></div>
+    </div>
+    <div class="g2">
+      <div class="card"><h3>Taxa por ano</h3><canvas id="c1"></canvas><p class="fn">* 2026 parcial</p></div>
+      <div class="card"><h3>Efetivados x Conclu&#237;dos por ano</h3><canvas id="c2"></canvas></div>
+      <div class="card full"><h3>Por empresa &mdash; efetivados vs com desfecho</h3><canvas id="c3" style="max-height:320px"></canvas></div>
+    </div>
+    <div class="card full">
+      <h3>Detalhamento por empresa</h3>
+      <div class="tabs">
+        <button class="tab on" onclick="ft(this,'all')">Todas</button>
+        <button class="tab" onclick="ft(this,'h')">&#8805;40%</button>
+        <button class="tab" onclick="ft(this,'m')">20-40%</button>
+        <button class="tab" onclick="ft(this,'l')">1-20%</button>
+        <button class="tab" onclick="ft(this,'z')">0%</button>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>Empresa</th><th>Com desfecho</th><th>Conclu&#237;dos</th><th>Efetivados</th><th>Taxa</th></tr></thead>
+        <tbody id="tb1"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<div class="pg" id="p2">
+  <div class="hd">
+    <div>
+      <h1>Efetiva&#231;&#227;o por Trimestre</h1>
+      <p>Jovens com fim de contrato dentro do trimestre. Denominador = conclu&#237;do + efetivado. Lista completa para auditoria.</p>
+    </div>
+    <span class="tag tb">&#218;ltimos 4 trimestres</span>
+  </div>
+  <div class="wrap">
+    <div class="info bl">
+      <b>Como ler:</b> clique num trimestre para ver o detalhamento completo.
+      Efetivados aparecem destacados em verde na lista de auditoria. Use a busca para filtrar por nome ou empresa.
+    </div>
+    <div class="tgrid" id="tcards"></div>
+    <div class="card full" style="margin-bottom:16px">
+      <h3>Comparativo dos trimestres</h3>
+      <canvas id="c4" style="max-height:220px"></canvas>
+    </div>
+    <div id="tdets"></div>
+  </div>
+</div>
+
+<script>
+var TRI = {};
+TRI["2T25"]={total:66,ef:16,and:0,taxa:24.2,forecast:false,emp:[["Ambev NE",10,2,20.0,0],["Unico",8,3,37.5,0],["Frete.com",7,4,57.1,0],["Stone",6,1,16.7,0],["Strada",6,0,0.0,0],["Árvore",4,2,50.0,0],["Bionexo",4,0,0.0,0],["Magazine Luiza",4,1,25.0,0],["Keego",3,0,0.0,0],["AvenueCode",2,0,0.0,0],["Comm",2,0,0.0,0],["Toro",2,0,0.0,0],["SIS",2,0,0.0,0],["Cobli",1,0,0.0,0],["Hotmart",1,0,0.0,0],["Integration",1,1,100.0,0],["UME",1,0,0.0,0],["Vitat",1,1,100.0,0],["Wise",1,1,100.0,0]],jov:[["Ana Beatriz Albuquerque Lopes","Ambev NE","2025-06-13",0,0],["Ana Vitória Dos Santos Rocha","Ambev NE","2025-06-13",0,0],["Gislayne Francine Dos Santos Souza Peixoto","Ambev NE","2025-06-13",0,0],["Jonatas Paixão Miranda Alves","Ambev NE","2025-06-13",0,0],["Júlia Vitória Francisco Nascimento","Ambev NE","2025-06-13",0,0],["Maria Clara Dos Santos Ramos","Ambev NE","2025-06-13",0,0],["Pedro Henrique Coutinho de Carvalho","Ambev NE","2025-06-13",0,0],["Samile Lima Santana","Ambev NE","2025-06-13",0,0],["Jonas Pereira Dos Santos Junior","Ambev NE","2025-06-13",1,0],["Tayná Marianne De Farias Vasconcelos","Ambev NE","2025-06-13",1,0],["Thais Aparecida Barbosa","AvenueCode","2025-06-04",0,0],["Karen Raquel Dionisio","AvenueCode","2025-06-04",0,0],["Everton Borges Dos Santos","Bionexo","2025-05-26",0,0],["Raphaella Lopes Gonzalez","Bionexo","2025-05-26",0,0],["Camila Pinto Martins","Bionexo","2025-06-04",0,0],["Maria Luiza Andrade Santos","Bionexo","2025-06-05",0,0],["Isabelly Bezerra Da Silva","Cobli","2025-06-01",0,0],["Yasmim Santos De Oliveira","Comm","2025-06-06",0,0],["Raissa Silva De Oliveira","Comm","2025-06-04",0,0],["Camila Dos Santos Gomes","Frete.com","2025-05-05",0,0],["Maria Eduarda Felipe Vieira","Frete.com","2025-05-05",0,0],["Anny Nicole Pereira Da Silva","Frete.com","2025-05-05",0,0],["Juliane Francelino De Macedo","Frete.com","2025-05-05",1,0],["Naely Cristine Pereira Da Silva","Frete.com","2025-05-05",1,0],["Julia De Oliveira Pereira","Frete.com","2025-05-05",1,0],["Camila Pinheiro de Lima","Frete.com","2025-05-05",1,0],["Ingrid Lorrane Fernandes Barbosa","Hotmart","2025-06-05",0,0],["Julia Bispo Dos Santos","Integration","2025-05-05",1,0],["Fernanda Sena De Souza","Keego","2025-05-05",0,0],["Rayane Gonçalves Araújo","Keego","2025-05-05",0,0],["Maxyan Peres Silva Dos Santos","Keego","2025-05-05",0,0],["Edilson Francisco Alves Rangel","Magazine Luiza","2025-04-01",0,0],["Victor Alexandre Moreira Coimbra","Magazine Luiza","2025-04-01",0,0],["Alissa Souza da Silva","Magazine Luiza","2025-04-01",0,0],["João Vitor Da Silva Pires","Magazine Luiza","2025-04-01",1,0],["Ana Karoline Santos Teixeira","SIS","2025-04-21",0,0],["Graziele Secundo Correia Dos Santos","SIS","2025-04-21",0,0],["Isabella Dias Moura","Stone","2025-04-01",0,0],["Carolina De Menezes Teixeira","Stone","2025-04-01",0,0],["Isabela Alves Aguiar","Stone","2025-04-01",0,0],["Ketlyn Rodrigues De Miranda","Stone","2025-04-21",0,0],["Pablo Henrique Oliveira Da Silva","Stone","2025-04-21",0,0],["Lívia Da Palma Lopes Chagas","Stone","2025-04-01",1,0],["Ana Luísa Souza Delminio","Strada","2025-06-05",0,0],["Carlos Lucio Santana Junior","Strada","2025-06-05",0,0],["João Othavio De Moraes Souza","Strada","2025-06-05",0,0],["Larissa Glória Da Silva","Strada","2025-06-05",0,0],["Milena Cavalcante Santana","Strada","2025-06-05",0,0],["Nayon Eikow Horn Martins","Strada","2025-06-05",0,0],["Augusto Maciel De Castro","Toro","2025-05-05",0,0],["Gabriel Da Cruz Oliveira","Toro","2025-05-05",0,0],["Kaline Rodrigues Silva","UME","2025-05-05",0,0],["Carlos Eduardo Duarte Bispo","Unico","2025-05-19",0,0],["Renato Cristian Silva Dos Santos","Unico","2025-05-19",0,0],["Giullia Castro Rodrigues","Unico","2025-05-19",0,0],["Khayan Alexsander De Barros Silva","Unico","2025-05-19",0,0],["Maria De Lourdes Assunção Santos","Unico","2025-05-19",0,0],["Adryan Lopes Lourenço Fonseca","Unico","2025-05-19",1,0],["Ariel Mori Dell Aringa","Unico","2025-05-19",1,0],["Kemilly Mendes Pardinho","Unico","2025-05-19",1,0],["Gabriel Romão Ribeiro","Vitat","2025-05-26",1,0],["Gabriela Abdelnor Tavares","Wise","2025-05-05",1,0],["Ana Julia Nascimento Gouvea","Árvore","2025-04-21",0,0],["Matheus Pinto Pereira","Árvore","2025-04-21",0,0],["Ian França Franco","Árvore","2025-04-21",1,0],["Wilson Gonçalves Salomão Santana","Árvore","2025-04-21",1,0]]};
+TRI["3T25"]={total:105,ef:36,and:0,taxa:34.3,forecast:false,emp:[["XP Inc",28,15,53.6,0],["Stone",19,7,36.8,0],["Hotmart",15,1,6.7,0],["Cobli",8,1,12.5,0],["ZUP",7,5,71.4,0],["Magazine Luiza",6,1,16.7,0],["GreenCare",5,0,0.0,0],["Bionexo",3,0,0.0,0],["Loft",3,0,0.0,0],["Jeitto",2,1,50.0,0],["ClickSign",2,1,50.0,0],["Mattos Filho",2,0,0.0,0],["Alice",1,1,100.0,0],["Swile",1,0,0.0,0],["Reclame Aqui",1,1,100.0,0],["UME",1,1,100.0,0],["Árvore",1,1,100.0,0]],jov:[["Laura Xavier Alcantara","Alice","2025-07-14",1,0],["Sthefany Oliveira Dos Santos","Bionexo","2025-07-14",0,0],["Gustavo dos Santos Nascimento","Bionexo","2025-07-15",0,0],["Ryan Silva de Lima","Bionexo","2025-07-15",0,0],["Milena Aparecida Costa Alves","ClickSign","2025-09-09",0,0],["Nicolly Batista De Oliveira","ClickSign","2025-08-18",1,0],["Daniela Geovana Rodrigues Dos Santos","Cobli","2025-07-01",0,0],["Julio Cesar Ferreira Chagas","Cobli","2025-07-01",0,0],["Kaique Caitite Jacome","Cobli","2025-07-01",0,0],["Victor Soares De Sousa","Cobli","2025-07-01",0,0],["Lavinea Matias Luz","Cobli","2025-08-04",0,0],["Raíssa Vieira De Sousa","Cobli","2025-08-04",0,0],["Paola Oliveira Teixeira","Cobli","2025-09-09",0,0],["Mariana Ferreira Gomes Da Silva","Cobli","2025-07-15",1,0],["Carlos Eduardo Moreira Rodrigues de Moura","GreenCare","2025-07-15",0,0],["Julia Alves Da Silva","GreenCare","2025-08-18",0,0],["Lucas Barbosa Dantas","GreenCare","2025-08-18",0,0],["Izadora Da Rocha Dos Santos","GreenCare","2025-08-18",0,0],["Vitor Henrique Santos Xavier","GreenCare","2025-08-18",0,0],["Aghata Leles Aredes","Hotmart","2025-07-14",0,0],["Daniel Kennedy Mariano Bernardo de Oliveira","Hotmart","2025-07-14",0,0],["Ellen Ferraz Dorleto","Hotmart","2025-07-14",0,0],["Gabriela Rodrigues dos Reis","Hotmart","2025-07-14",0,0],["Isabella Kethelen Gonçalves Bacelar","Hotmart","2025-07-14",0,0],["Joana Leticia Dias Bastos","Hotmart","2025-07-14",0,0],["Julia Simplicio Azevedo","Hotmart","2025-07-14",0,0],["Manuella Vieira Pena","Hotmart","2025-07-14",0,0],["Maria Luiza Gomes Pereira","Hotmart","2025-07-14",0,0],["Patrícia Juliana Pimenta Mendes","Hotmart","2025-07-14",0,0],["Rafael Jesus de Almeida","Hotmart","2025-07-14",0,0],["Sara Isabel Santana Coelho","Hotmart","2025-07-14",0,0],["Simon Elias Ferreira Guerra","Hotmart","2025-07-14",0,0],["Maria Clara Duque De Souza","Hotmart","2025-07-14",0,0],["Vanuza Gabrielly de Araújo Andrade","Hotmart","2025-07-14",1,0],["Maria Eduarda Alves De Souza","Jeitto","2025-07-15",0,0],["Guilherme Oliveira Suzano","Jeitto","2025-07-14",1,0],["Crislaine Beatriz De Souza Silva","Loft","2025-09-09",0,0],["Cauê Ramon De Souza Campos","Loft","2025-09-09",0,0],["Guilherme Santos De Brito","Loft","2025-09-09",0,0],["Heitor Satil Cruz","Magazine Luiza","2025-09-23",0,0],["Cauã Messias Diniz","Magazine Luiza","2025-09-23",0,0],["Nicole Vitória Marques Andrade","Magazine Luiza","2025-09-23",0,0],["Cauã Henrique Nascimento Martins","Magazine Luiza","2025-09-23",0,0],["Maria Vitória Bernardes Vieira","Magazine Luiza","2025-09-23",0,0],["Lara Fernandes","Magazine Luiza","2025-09-23",1,0],["Milena Moreira Sanches","Mattos Filho","2025-07-15",0,0],["Maria Eduarda Grimaldi","Mattos Filho","2025-09-09",0,0],["Breno Rafael Silva Rios","Reclame Aqui","2025-09-23",1,0],["Clara Mariano Cordeiro","Stone","2025-07-15",0,0],["João Gabriel Riscado Da Silva","Stone","2025-07-15",0,0],["André Da Silva Nobrega","Stone","2025-07-15",0,0],["Jennifer Moraes De Sousa","Stone","2025-07-15",0,0],["Mariana Santos Nunes Pontes De Araujo","Stone","2025-07-15",0,0],["Kamille Nunes Carreiro","Stone","2025-07-15",0,0],["Aline Queiroz Monteiro","Stone","2025-08-04",0,0],["Davi Santos De Azevedo","Stone","2025-08-04",0,0],["Guilherme Gregorio Pereira Gonzaga Dos Santos","Stone","2025-08-04",0,0],["Gabriel Mendes Cirillo","Stone","2025-08-18",0,0],["Leclair Souza Ferreira","Stone","2025-09-15",0,0],["Larissa De Souza Nepomuceno","Stone","2025-09-15",0,0],["Haryane Araújo Das Neves","Stone","2025-07-15",1,0],["Daniel Dos Santos De Pontes","Stone","2025-07-15",1,0],["Geovana Barreto Pereira","Stone","2025-08-04",1,0],["Letícia Matias Santos","Stone","2025-08-04",1,0],["Rafaella Torres Dos Santos","Stone","2025-08-04",1,0],["Niso Henrique Conzine De Lima","Stone","2025-09-09",1,0],["Daniela Gomes Das Neves Lima","Stone","2025-09-15",1,0],["Giovanna Ferreira Vaz Pereira","Swile","2025-08-18",0,0],["Kemilly Rocha da Silva","UME","2025-07-14",1,0],["Aurelio Lima Da Silva","XP Inc","2025-08-15",0,0],["Guilherme Cardoso De Melo França","XP Inc","2025-08-15",0,0],["Henry Gimenez Da Costa","XP Inc","2025-08-15",0,0],["Karoline Da Silva Carvalho","XP Inc","2025-08-15",0,0],["Nicole Resende De Andrade Correa","XP Inc","2025-08-15",0,0],["Alfonso Francisco Graziano Alves","XP Inc","2025-08-15",0,0],["Débora Sousa Andrade","XP Inc","2025-08-15",0,0],["Gabriela Medeiros Da Silva","XP Inc","2025-08-15",0,0],["Giovanna Araújo Barbosa","XP Inc","2025-08-15",0,0],["Maria Luísa Siqueira Da Silva","XP Inc","2025-08-15",0,0],["Mel Bonifacio Lima","XP Inc","2025-08-15",0,0],["Nathália Franchini De Souza","XP Inc","2025-08-15",0,0],["Sara Tavares Sales","XP Inc","2025-08-15",0,0],["Giovanna Dias De Souza","XP Inc","2025-08-15",1,0],["Marcos Augusto De Moura Siqueira","XP Inc","2025-08-15",1,0],["Mariana Ketlyn Candido Silva","XP Inc","2025-08-15",1,0],["Marina Nascimento De Moura","XP Inc","2025-08-15",1,0],["Mathias Janke Coimbra","XP Inc","2025-08-15",1,0],["Felipe Higo Mota Simplicio","XP Inc","2025-08-15",1,0],["Gabriela Maciel De Castro","XP Inc","2025-08-15",1,0],["Gustavo Kenzo Kimoto","XP Inc","2025-08-15",1,0],["Leticia Russo Damasceno","XP Inc","2025-08-15",1,0],["Maria Das Graças Lima Cardoso E Silva","XP Inc","2025-08-15",1,0],["Maria Eduarda Rodrigues Zuppo","XP Inc","2025-08-15",1,0],["Maysa","XP Inc","2025-08-15",1,0],["Nicole Ayna Silva Dos Santos","XP Inc","2025-08-15",1,0],["Tobias Janke Coimbra","XP Inc","2025-08-15",1,0],["Wallace Fortes Cruz","XP Inc","2025-08-15",1,0],["Sandra Eduarda Mendes Da Silva","ZUP","2025-09-09",0,0],["Maria Eduarda Oliveira Santos","ZUP","2025-09-09",0,0],["Alicia Feliciano","ZUP","2025-09-09",1,0],["Samira Rodrigues Silva","ZUP","2025-09-09",1,0],["Jaiany Oliveira Silva","ZUP","2025-09-09",1,0],["Raiani Silva","ZUP","2025-09-09",1,0],["Isabela Santana Camelo","ZUP","2025-09-09",1,0],["Maria Vitória Do Nascimento Cristóvão","Árvore","2025-07-15",1,0]]};
+TRI["4T25"]={total:137,ef:29,and:0,taxa:21.2,forecast:false,emp:[["CorPay",46,7,15.2,0],["Stone",23,6,26.1,0],["Ambev NE",17,2,11.8,0],["Anota AI",12,5,41.7,0],["Ambev Corp",5,1,20.0,0],["ClearSale",5,1,20.0,0],["Reclame Aqui",5,2,40.0,0],["Alice",4,2,50.0,0],["Conexa",4,1,25.0,0],["XP Inc",3,0,0.0,0],["Alura",3,0,0.0,0],["Blue Healt",2,0,0.0,0],["Datora",2,2,100.0,0],["Act",1,0,0.0,0],["Bionexo",1,0,0.0,0],["Comm",1,0,0.0,0],["LivUp",1,0,0.0,0],["Mattos Filho",1,0,0.0,0],["Sanar",1,0,0.0,0]],jov:[["Joseph Emercika Choisy","Act","2025-10-31",0,0],["Vinicius Silva Cavalcante","Alice","2025-10-31",0,0],["Milena Martins Venuto","Alice","2025-11-25",0,0],["Mateus Coripio Martins da Silva","Alice","2025-10-31",1,0],["Enzo Henrique Da Silva Teixeira","Alice","2025-12-15",1,0],["Lucas Rodrigues De Souza","Alura","2025-10-09",0,0],["Geovanna Pereira Maciel","Alura","2025-11-18",0,0],["Larissa Esteves Oliveira","Alura","2025-11-25",0,0],["Lais Franquilino Tomaz","Ambev Corp","2025-10-09",0,0],["Vitor Oliveira Ramos da Silva","Ambev Corp","2025-10-09",0,0],["Maria Eduarda de Jesus dos Santos","Ambev Corp","2025-10-09",0,0],["Livia Irene Santana da Silva","Ambev Corp","2025-10-09",0,0],["Gabriel Bernardo da Silva","Ambev Corp","2025-10-09",1,0],["Ana Tereza Soares Alves","Ambev NE","2025-10-22",0,0],["Daniel Santos Ribeiro","Ambev NE","2025-10-22",0,0],["Graziele De Almeida Soares","Ambev NE","2025-10-22",0,0],["Guilherme Weslley Da Silva","Ambev NE","2025-10-22",0,0],["Hellen Raquel de Lima Simplício Braga","Ambev NE","2025-10-22",0,0],["Iago Eliel Ladeia Teixeira","Ambev NE","2025-10-22",0,0],["Maria Heloisa dos Santos Silva","Ambev NE","2025-10-22",0,0],["Patrick Sandes Durval Amaral Matos","Ambev NE","2025-10-22",0,0],["Glauber Max Nogueira de Sousa Silva","Ambev NE","2025-10-27",0,0],["Flamir Santa Rita Couto","Ambev NE","2025-10-27",0,0],["Jaqueline Ferreira dos Santos","Ambev NE","2025-10-27",0,0],["Beatriz Medeiros Pantaleão Ribeiro","Ambev NE","2025-10-27",0,0],["Davi Morais Vasconcelos Gomes","Ambev NE","2025-10-27",0,0],["Maria Eduarda Pedreira Correia","Ambev NE","2025-10-27",0,0],["Tuana Nicoly Siqueira Lima","Ambev NE","2025-10-27",0,0],["Júlia Maria Da Silva Nascimento","Ambev NE","2025-10-22",1,0],["Marcelle Campos Oliveira","Ambev NE","2025-10-22",1,0],["Fabio Luiz Garrote Ramaldes","Anota AI","2025-12-15",0,0],["Gabriela Ventura Ramos","Anota AI","2025-12-15",0,0],["Giovanna Davila Nogueira","Anota AI","2025-12-15",0,0],["Joana Victoria Alves Da Silva","Anota AI","2025-12-15",0,0],["Lavinia Viana Ferreira","Anota AI","2025-12-15",0,0],["Manuele Da Graça Souza","Anota AI","2025-12-15",0,0],["Maria Eduarda Gonçalves Bruno","Anota AI","2025-12-15",0,0],["Alrykemes Gomes Cavalcanti","Anota AI","2025-12-15",1,0],["Ana Cecilia Simoes Chalegre","Anota AI","2025-12-15",1,0],["Emmily Sterphany Melo Rocha","Anota AI","2025-12-15",1,0],["Lara Cibele Chaves Vieira","Anota AI","2025-12-15",1,0],["Maria Beatriz Da Silva Fideles","Anota AI","2025-12-15",1,0],["Millena Trindade de Carvalho","Bionexo","2025-12-18",0,0],["Kayke Moura da Silva Santos","Blue Healt","2025-10-31",0,0],["Larissa Ribeiro de Lima","Blue Healt","2025-10-31",0,0],["Rafaela Azevedo Fernandes","ClearSale","2025-10-31",0,0],["Renata Santos Silva","ClearSale","2025-10-31",0,0],["Samyrah Victoria Felicio Brito","ClearSale","2025-11-05",0,0],["Artur Oliveira De Santana","ClearSale","2025-11-18",0,0],["Raissa Oliveira Da Costa","ClearSale","2025-11-25",1,0],["Matheus Cirineu Dos Santos Moreira","Comm","2025-12-15",0,0],["Ana Ketelyn Campos","Conexa","2025-11-18",0,0],["Ana Letícia Silva Lopes","Conexa","2025-11-18",0,0],["Geová Júnior","Conexa","2025-11-18",0,0],["Felipe Bicaletto","Conexa","2025-11-18",1,0],["Luana Gabriely Sousa Nascimento","CorPay","2025-10-14",0,0],["Evelyn Carvalho Sousa","CorPay","2025-10-20",0,0],["Luiz Felipe Ferreira de Jesus","CorPay","2025-10-20",0,0],["Christian Tenorio Cardoso","CorPay","2025-12-05",0,0],["Davi Teixeira Alba","CorPay","2025-12-05",0,0],["Eduardo Filipe Pessoa Gomes","CorPay","2025-12-05",0,0],["Eduardo Oliveira Silva","CorPay","2025-12-05",0,0],["Gabriel Henrique Martins José","CorPay","2025-12-05",0,0],["Gabriela Barbosa Freire","CorPay","2025-12-05",0,0],["Ingrid Marques De Souza","CorPay","2025-12-05",0,0],["Jennifer Lopes","CorPay","2025-12-05",0,0],["Kethelyn Campos Panacione","CorPay","2025-12-05",0,0],["Manoela Marques Dantas Da Silva","CorPay","2025-12-05",0,0],["Mariana Carvalho","CorPay","2025-12-05",0,0],["Mel Aquino","CorPay","2025-12-05",0,0],["Milena Dias Campos Da Cruz","CorPay","2025-12-05",0,0],["Natany Gomes Soares","CorPay","2025-12-05",0,0],["Nathalia Marins Dias Dos Santos","CorPay","2025-12-05",0,0],["Nicolly Ferreira Da Silva Munhoz","CorPay","2025-12-05",0,0],["Paloma Ferreira De Sousa","CorPay","2025-12-05",0,0],["Pedro Henrique Nunes Silva","CorPay","2025-12-05",0,0],["Rafael Nascimento De Oliveira","CorPay","2025-12-05",0,0],["Raphael Ferraiolo Pauleschi","CorPay","2025-12-05",0,0],["Raul Pestana Bezerra","CorPay","2025-12-05",0,0],["Sofia Lima De Oliveira","CorPay","2025-12-05",0,0],["Laryssa Da Silva Marques","CorPay","2025-12-05",0,0],["Nicolas Souza De Oliveira","CorPay","2025-12-05",0,0],["Marcos Aquino Da Vera","CorPay","2025-12-05",0,0],["Sabrina Calixto","CorPay","2025-12-05",0,0],["Bruno Da Silva Andrade","CorPay","2025-12-05",0,0],["Maria Eduarda Anastácio","CorPay","2025-12-05",0,0],["Izabelly Antoneli Miranda De Souza","CorPay","2025-12-05",0,0],["Ana Clara Gomes Januario","CorPay","2025-12-05",0,0],["Miguel Nogueira De Jesus","CorPay","2025-12-05",0,0],["Giulia Vitória Bispo Do Carmo","CorPay","2025-12-12",0,0],["Juliane Dos Santos Pereira","CorPay","2025-12-05",0,0],["Kauê Costa","CorPay","2025-12-15",0,0],["Luiza Verissimo","CorPay","2025-12-15",0,0],["Renata Santana","CorPay","2025-12-15",0,0],["Viviane Ferreira Bispo","CorPay","2025-10-14",1,0],["Davi Afonso Teixeira De Oliveira","CorPay","2025-12-05",1,0],["Gabriel Henrique De Aguiar Silva","CorPay","2025-12-05",1,0],["Gabriel Santos De Oliveira","CorPay","2025-12-05",1,0],["Hasan Basam De Souza Dahbur","CorPay","2025-12-05",1,0],["Melcksedeck Teyllor Rocha De Sousa","CorPay","2025-12-05",1,0],["Larissa Félix","CorPay","2025-12-15",1,0],["Nicolas Da Silva Oliveira","Datora","2025-11-25",1,0],["Thayna Araújo Dos Santos","Datora","2025-12-15",1,0],["Luana Rodrigues Fidelis","LivUp","2025-10-31",0,0],["Ingrid dos Santos Leite","Mattos Filho","2025-10-31",0,0],["Cristian Santos de Jesus","Reclame Aqui","2025-10-31",0,0],["Alana Fernandes Da Silva","Reclame Aqui","2025-12-15",0,0],["Luana Moura Lima","Reclame Aqui","2025-12-15",0,0],["Gabriele Alves Oliveira","Reclame Aqui","2025-11-18",1,0],["Kethelyn De Lima Figueiredo","Reclame Aqui","2025-12-15",1,0],["Adrielly Matias De Almeida","Sanar","2025-12-15",0,0],["Alana Kamily Souza Soares","Stone","2025-10-14",0,0],["Davi Camargo Matias Freitas","Stone","2025-10-14",0,0],["Iara Gomes dos Reis","Stone","2025-10-14",0,0],["James Rian Oliveira Nascimento","Stone","2025-10-14",0,0],["João Vitor Galindo de Abreu","Stone","2025-10-14",0,0],["Luiz Vitor Lima Mendes","Stone","2025-10-14",0,0],["Marco Antônnio de Souza Santos","Stone","2025-10-14",0,0],["Maria Eduarda de Moraes Olegario","Stone","2025-10-14",0,0],["Maria Eduarda Feitosa","Stone","2025-10-14",0,0],["Maria Rita da Silva Gomes","Stone","2025-10-14",0,0],["Maria Victoria Berbett De Oliveira Silva","Stone","2025-10-14",0,0],["Miguel Bordalo Muniz","Stone","2025-10-14",0,0],["Samara Souza da Silva","Stone","2025-10-14",0,0],["Victória Mattos Pereira","Stone","2025-10-31",0,0],["Ester Gonçalves da Silva","Stone","2025-10-31",0,0],["Rafael Amaral Ribeiro","Stone","2025-10-31",0,0],["Thiago Sena Aguiar","Stone","2025-11-18",0,0],["Mariana Souza Valim","Stone","2025-10-14",1,0],["Mariana Magalhães Correa de Sousa","Stone","2025-10-31",1,0],["Yasmin Mendonça Libarino","Stone","2025-10-31",1,0],["Miguel De Andrade Almeida Lírio","Stone","2025-10-31",1,0],["Ághata Cristhina Da Silva Brito","Stone","2025-11-18",1,0],["Alejandro Monteiro De Souza","Stone","2025-11-25",1,0],["Yuri Guedes Umeda","XP Inc","2025-10-09",0,0],["Giovana Rodrigues Oliveira","XP Inc","2025-10-09",0,0],["Larissa Oliveira Lima Da Silva","XP Inc","2025-10-22",0,0]]};
+TRI["1T26"]={total:116,ef:35,and:0,taxa:30.2,forecast:false,emp:[["Flash",17,5,29.4,0],["Magazine Luiza",11,3,27.3,0],["Quinto Andar",10,2,20.0,0],["Rappi",10,3,30.0,0],["FMU",7,5,71.4,0],["Arco",6,3,50.0,0],["Neon",6,2,33.3,0],["Nuvemshop",6,3,50.0,0],["Sumup",6,1,16.7,0],["CorPay",5,0,0.0,0],["Toro",4,0,0.0,0],["Stone",4,1,25.0,0],["Celcoin",2,0,0.0,0],["Alice",2,0,0.0,0],["Zé Delivery",2,0,0.0,0],["Sanar",2,0,0.0,0],["Reclame Aqui",2,1,50.0,0],["Árvore",2,2,100.0,0],["Comm",1,0,0.0,0],["Alura",1,0,0.0,0],["Blue Healt",1,0,0.0,0],["Cerc",1,0,0.0,0],["Loft",1,0,0.0,0],["LWSA",1,1,100.0,0],["Conexa",1,0,0.0,0],["Datora",1,0,0.0,0],["Seedz",1,1,100.0,0],["Trela",1,1,100.0,0],["XP Inc",1,0,0.0,0],["UME",1,1,100.0,0]],jov:[["Adriele Vitoria","Alice","2026-01-05",0,0],["Thaina Costa","Alice","2026-01-16",0,0],["Iara Martinez Avena","Alura","2026-01-16",0,0],["Keven Yago Costa De Oliveira","Arco","2026-01-05",0,0],["Sofia Stremel Mercadante De Lima","Arco","2026-01-05",0,0],["Eduardo Silva Reis","Arco","2026-01-16",0,0],["Samuel De Queiroz","Arco","2026-01-05",1,0],["Francisco Francione Pinheiro De Araújo Neto","Arco","2026-01-16",1,0],["Gabriela Alencar Lopes","Arco","2026-01-16",1,0],["Maria Luiza Maziviero Evangelista","Blue Healt","2026-01-16",0,0],["Maria Clara Galdino Ferreira","Celcoin","2026-02-03",0,0],["Murilo Leonel Linares","Celcoin","2026-02-03",0,0],["Andreza Silva De Oliveira","Cerc","2026-02-15",0,0],["Giovanna Marinho","Comm","2026-01-05",0,0],["Raissa Ferreida Da Silva","Conexa","2026-02-27",0,0],["Lais Oliveira Da Rocha","CorPay","2026-01-05",0,0],["Nicole Augusto De Aguiar","CorPay","2026-02-15",0,0],["Rosa Vitória Silva Oliveira","CorPay","2026-02-15",0,0],["Julia Grilo Guimarães","CorPay","2026-02-27",0,0],["Julia Narciso Dos Santos","CorPay","2026-02-27",0,0],["Raphaela Zovico De Aragão","Datora","2026-02-27",0,0],["karolyne de Moraes Pessoa","FMU","2026-03-31",0,0],["Ana Clara Corrêa Lustoza","FMU","2026-03-31",0,0],["Kauê Medeiros Bezerra","FMU","2026-03-31",1,0],["João Vitor Peixoto Teofelo","FMU","2026-03-31",1,0],["Kalel Rodrigues da Silva","FMU","2026-03-31",1,0],["Bianca Raimundo de Jesus","FMU","2026-03-31",1,0],["Ana Victoria Leitão Oliveira","FMU","2026-03-31",1,0],["Evellyn Aparecida Pereira De Oliveira","Flash","2026-01-05",0,0],["Vinicius Novaes Pereira","Flash","2026-01-05",0,0],["Graziely Batista","Flash","2026-01-05",0,0],["Aldryn Coutinho Ghirardello Santos","Flash","2026-01-05",0,0],["Murilo Mendes Pedra","Flash","2026-01-05",0,0],["Carina Da Silva Ferreira","Flash","2026-01-05",0,0],["Thais Souza Santos","Flash","2026-01-05",0,0],["Juliana Nascimento Arruda","Flash","2026-01-16",0,0],["Kaique João Do Nascimento","Flash","2026-01-16",0,0],["Catarina Pietra Santini Ros","Flash","2026-02-15",0,0],["Enzo David Santos Da Silva","Flash","2026-02-15",0,0],["Gustavo Ribeiro Borges","Flash","2026-02-15",0,0],["Lucas Dias Da Silva","Flash","2026-01-05",1,0],["Enzzo D Lucca Blengini E Silva","Flash","2026-01-16",1,0],["Giulia Frazão Cerqueira","Flash","2026-01-16",1,0],["Gustavo Da Silva Santana","Flash","2026-01-16",1,0],["Bianca De Souza Reimberg","Flash","2026-02-15",1,0],["Lucas Pereira Santos","LWSA","2026-03-31",1,0],["Mikaela Da Silva Cardoso","Loft","2026-01-05",0,0],["Ana Clara Oliveira Martins","Magazine Luiza","2026-01-16",0,0],["Daniel Jose Barbosa Migani","Magazine Luiza","2026-01-16",0,0],["Maria Laura Goncalves De Azevedo","Magazine Luiza","2026-01-16",0,0],["Mariana Ribeiro Lima","Magazine Luiza","2026-01-16",0,0],["Rafaela Fernandes Marcussi","Magazine Luiza","2026-01-16",0,0],["Skarlaty Camilo Lopes Da Silva","Magazine Luiza","2026-01-16",0,0],["Victorya Silei Machado Argomedo","Magazine Luiza","2026-01-16",0,0],["Suélen Silva De Brito","Magazine Luiza","2026-02-15",0,0],["Ana Beatriz Flausino Guellero","Magazine Luiza","2026-01-16",1,0],["Ana Clara De Souza Pimentel","Magazine Luiza","2026-01-16",1,0],["Joao Otavio Riveiro","Magazine Luiza","2026-01-16",1,0],["Elizabete Lopes Estrella","Neon","2026-02-27",0,0],["Giovanna Azocar Leite","Neon","2026-02-27",0,0],["Monica Maria Coelho Thuller","Neon","2026-02-27",0,0],["Rayssa Morais De Aquino","Neon","2026-02-27",0,0],["Fernando Camilo Barros","Neon","2026-02-27",1,0],["Rayssa Vitória De Oliveira","Neon","2026-02-27",1,0],["Matheus Monteiro Misael","Nuvemshop","2026-02-15",0,0],["Thais Aparecida De Almeida","Nuvemshop","2026-02-15",0,0],["Yasmin Ariel De Jesus Santos","Nuvemshop","2026-02-15",0,0],["Ana Caroliny Cordeiro Da Silva","Nuvemshop","2026-02-15",1,0],["Andrey Mattheus Braga Pedroso","Nuvemshop","2026-02-15",1,0],["Isabel Cristina Albino Da Silva","Nuvemshop","2026-02-15",1,0],["Giovana De Araujo Lima","Quinto Andar","2026-02-27",0,0],["Guilherme Matos Pereira","Quinto Andar","2026-02-27",0,0],["Gustavo De Carvalho Lamin","Quinto Andar","2026-02-27",0,0],["Maria Eduarda Aparecida Souza Santos","Quinto Andar","2026-02-27",0,0],["Maria Vitória Barbosa Freitas","Quinto Andar","2026-02-27",0,0],["Mike Alves Da Silva","Quinto Andar","2026-02-27",0,0],["Thaynara Kelly Lisboa Novaes","Quinto Andar","2026-02-27",0,0],["Victória Abreu","Quinto Andar","2026-02-27",0,0],["Muryel Do Nascimento","Quinto Andar","2026-02-27",1,0],["Nayara Cristina Pereira Da Silva","Quinto Andar","2026-02-27",1,0],["Emilli Souza Lunar","Rappi","2026-01-05",0,0],["Livia Hernandes Freitas","Rappi","2026-01-05",0,0],["Melissa Alves De Oliveira","Rappi","2026-01-05",0,0],["Raissa Barbosa Da Silva","Rappi","2026-01-05",0,0],["Daniel Lucas Santos","Rappi","2026-01-05",0,0],["Emanuelle Oliveira Barbosa","Rappi","2026-01-16",0,0],["Júlia Germano Cavalcante","Rappi","2026-02-15",0,0],["Hadja Santos","Rappi","2026-01-05",1,0],["Caroline Teixeira Ribeiro","Rappi","2026-01-05",1,0],["Matheus Madrid De Carvalho","Rappi","2026-02-27",1,0],["Arthur de Souza Monteiro","Reclame Aqui","2026-03-31",0,0],["Geovanna Gomes Almeida","Reclame Aqui","2026-02-15",1,0],["Jermeson Basto Ferreira","Sanar","2026-02-15",0,0],["Fernanda Araújo dos Santos","Sanar","2026-03-31",0,0],["Maria Eduarda Reis Bernardes de Oliveira","Seedz","2026-03-04",1,0],["Gabriela Viana Da Silva","Stone","2026-01-16",0,0],["Victoria Dos Santos Dias De Lima","Stone","2026-01-16",0,0],["Karina Feliciano Da Silva Ferreira","Stone","2026-02-03",0,0],["Maria Eduarda Francelino Assis","Stone","2026-02-03",1,0],["Estela Garcia De Oliveira","Sumup","2026-01-05",0,0],["Luana De Moura Coelho","Sumup","2026-01-05",0,0],["Nicole Gomes Oliveira","Sumup","2026-01-05",0,0],["Andressa Karen De Jesus Silva","Sumup","2026-01-05",0,0],["Isabelli Santana Souza","Sumup","2026-01-05",0,0],["Pamella Garcia De Santana","Sumup","2026-01-05",1,0],["Sofia Da Costa Pereira","Toro","2026-02-03",0,0],["Ryana Aparecida da Silva Guedes","Toro","2026-01-21",0,0],["Dayane Oliveira de Almeida","Toro","2026-01-21",0,0],["Maria Isabel Lidia Cacheche Rodrigues","Toro","2026-01-21",0,0],["Lucas Alves","Trela","2026-02-27",1,0],["Isabel Gonçalves Magalhães","UME","2026-03-04",1,0],["ALEXANDRE PRAZERES DOS SANTOS","XP Inc","2026-03-31",0,0],["Helena Fachini Gonçalves","Zé Delivery","2026-01-05",0,0],["Rebeca Dos Reis Silva","Zé Delivery","2026-02-27",0,0],["Ana Carolina Silva Jardim","Árvore","2026-02-28",1,0],["Amanda Will Marques da Costa","Árvore","2026-02-24",1,0]]};
+TRI["2T26"]={total:92,ef:22,and:57,taxa:23.9,forecast:true,emp:[["Magazine Luiza",25,7,28.0,18],["Quinto Andar",10,2,20.0,8],["Contabilizei",7,0,0.0,0],["Gringo",7,0,0.0,7],["Koin",4,2,50.0,0],["CorPay",4,1,25.0,1],["Salu",4,4,100.0,0],["Sanar",3,0,0.0,3],["Gupy",3,0,0.0,3],["Flash",3,0,0.0,3],["Arco",2,2,100.0,0],["Reclame Aqui",2,1,50.0,0],["Turbi",2,0,0.0,2],["Azos",2,2,100.0,0],["Rappi",2,0,0.0,2],["Alura",1,0,0.0,1],["Anota AI",1,0,0.0,1],["Celcoin",1,0,0.0,1],["Cerc",1,0,0.0,1],["Expresso Nepomuceno",1,0,0.0,0],["CI T",1,1,100.0,0],["LWSA",1,0,0.0,1],["GreenCare",1,0,0.0,1],["Netflix",1,0,0.0,1],["LivUp",1,0,0.0,1],["Nuvemshop",1,0,0.0,1],["Provence Capital",1,0,0.0,1]],jov:[["Sabrina Gabrielly Bispo Pereira","Alura","2026-06-26",0,1],["Felipe Pereira Souto","Anota AI","2026-06-19",0,1],["Adrielly de Souza Guimarães","Arco","2026-05-10",1,0],["Rafael Custodio Teixeira","Arco","2026-05-10",1,0],["Vitoria Oliveira Pinheiro","Azos","2026-06-08",1,0],["Felipe Rolim Silva","Azos","2026-06-08",1,0],["Ivan Silva da Rocha","CI T","2026-06-26",1,0],["Tayna Arruda Nogueira","Celcoin","2026-06-26",0,1],["Maria Luiza Gonçalves De Medeiros Costa","Cerc","2026-06-19",0,1],["Aleck Davi Melo Rodrigues","Contabilizei","2026-05-11",0,0],["Julia Gabriele Largura","Contabilizei","2026-05-11",0,0],["Leticia Santos Moura","Contabilizei","2026-05-11",0,0],["Rafah Pedrosa Crates","Contabilizei","2026-05-11",0,0],["Lorena Justine Teixeira","Contabilizei","2026-05-11",0,0],["Guilherme Eduardo Fodi","Contabilizei","2026-05-11",0,0],["Gianlucca Luiz Bonatto","Contabilizei","2026-05-11",0,0],["Nicolly Souza","CorPay","2026-04-27",0,0],["Rayssa Ribeiro de Carvalho","CorPay","2026-05-10",0,0],["Pedro Henrique de Oliveira","CorPay","2026-04-27",1,0],["Kawan Gomes Rodrigues","CorPay","2026-06-19",0,1],["João Guilherme Santos Reis","Expresso Nepomuceno","2026-04-27",0,0],["Alexandra Silva Rocha","Flash","2026-06-01",0,1],["Pedro Alexandre Silva","Flash","2026-06-01",0,1],["Sabrina Borges Macedo","Flash","2026-06-01",0,1],["Gustavo Henrique Silva Dos Santos Magno","GreenCare","2026-06-19",0,1],["Ana Carolina De Macedo Mazieiro","Gringo","2026-06-26",0,1],["Lucas Luiz Lamana","Gringo","2026-06-26",0,1],["Ghiovana Rocha","Gringo","2026-06-26",0,1],["Letícia Dutra Lima","Gringo","2026-06-26",0,1],["Letícia Gabrielle Braga Da Silva","Gringo","2026-06-26",0,1],["Bianca Batista De Souza","Gringo","2026-06-26",0,1],["Isabela Crystine Da Silva Gomes","Gringo","2026-06-26",0,1],["Lucas Sena Marques","Gupy","2026-06-26",0,1],["João Victor Dias De Oliveira Rezende","Gupy","2026-06-26",0,1],["Karine Vitória Timóteo Bezerra Da Silva","Gupy","2026-06-26",0,1],["Anna Jullia Santos Dos Reis","Koin","2026-04-27",0,0],["Diédson Da Silva Dos Reis","Koin","2026-04-27",0,0],["Gabriela Oliveira Santos","Koin","2026-04-27",1,0],["Miguel Santos Ferreira","Koin","2026-04-27",1,0],["Vitoria Silva Leite","LWSA","2026-06-26",0,1],["Karolyne Da Silva Rodrigues","LivUp","2026-06-08",0,1],["Victor Silva Nascimento","Magazine Luiza","2026-06-08",1,0],["Matheus Henrique Da Silva","Magazine Luiza","2026-06-08",1,0],["Rebeca Alves De Oliveira","Magazine Luiza","2026-06-08",1,0],["Ana Clara Bissoli Nascimento","Magazine Luiza","2026-06-08",1,0],["Thaynara De Souza","Magazine Luiza","2026-06-08",1,0],["Matheus Canuto Sales","Magazine Luiza","2026-06-08",1,0],["Leonardo Da Silva Nogueira","Magazine Luiza","2026-06-08",1,0],["Bruno Henrique Santos Silva","Magazine Luiza","2026-06-08",0,1],["Vanessa Crystina De Assumpção","Magazine Luiza","2026-06-08",0,1],["Leticia Kauani Da Silva","Magazine Luiza","2026-06-08",0,1],["Pedro Moreira","Magazine Luiza","2026-06-08",0,1],["Rafael Da Silva Santos De Paula","Magazine Luiza","2026-06-08",0,1],["Samuel Alves Roque","Magazine Luiza","2026-06-08",0,1],["Nicolly Vilela Pansa","Magazine Luiza","2026-06-08",0,1],["Luana Conceição De Carvalho","Magazine Luiza","2026-06-08",0,1],["Diego Santos","Magazine Luiza","2026-06-08",0,1],["Miguel Couto Grillo","Magazine Luiza","2026-06-08",0,1],["Gabriel Furlan Batista","Magazine Luiza","2026-06-08",0,1],["Emilly Da Silva Moura","Magazine Luiza","2026-06-08",0,1],["Gabriely Castilho Fortunato","Magazine Luiza","2026-06-08",0,1],["Isabela Gomes Da Silva Reis","Magazine Luiza","2026-06-08",0,1],["Italo Francisco Nascimento Dos Santos","Magazine Luiza","2026-06-08",0,1],["Tayna Aparecida Duarte Gomes","Magazine Luiza","2026-06-08",0,1],["Maria Eduarda Campos Medeiros Dos Santos","Magazine Luiza","2026-06-02",0,1],["Maria Eduarda Silva","Magazine Luiza","2026-06-02",0,1],["João Pedro Pereira Rodrigues","Netflix","2026-06-01",0,1],["Taylor Dos Santos Pedro","Nuvemshop","2026-06-26",0,1],["Julia Domingues Da Silva","Provence Capital","2026-06-19",0,1],["Amanda Da Cruz Campos","Quinto Andar","2026-06-01",1,0],["Julia Gomes De Godoi Rezende","Quinto Andar","2026-06-01",1,0],["Beatriz Rocha Luis","Quinto Andar","2026-06-01",0,1],["Bruna Letícia","Quinto Andar","2026-06-01",0,1],["Guilherme Gonçalves De Laia","Quinto Andar","2026-06-01",0,1],["Lucas De Paula Trindade","Quinto Andar","2026-06-01",0,1],["Nicolas Luan Da Silva","Quinto Andar","2026-06-01",0,1],["Ryan Kaique Silva","Quinto Andar","2026-06-01",0,1],["Melissa Antonele Santos Ferreira","Quinto Andar","2026-06-01",0,1],["Izabel Soares Ramos","Quinto Andar","2026-06-01",0,1],["Beatriz Machado Xavier","Rappi","2026-06-01",0,1],["Maria Clara Oliveira","Rappi","2026-06-02",0,1],["Luan Pollini de Araújo","Reclame Aqui","2026-05-10",0,0],["Rafael Rita Dos Santos Junior","Reclame Aqui","2026-06-26",1,0],["Juliana Vilela De Oliveira","Salu","2026-06-26",1,0],["Beatriz Costa Carvalho","Salu","2026-06-26",1,0],["Guilherme Felix Felicio","Salu","2026-06-26",1,0],["Isabella Brito Costa Barbosa","Salu","2026-06-26",1,0],["Yasmin Keully Da Silva Ramos","Sanar","2026-06-01",0,1],["Artur Pereira Costa","Sanar","2026-06-19",0,1],["Geovanna Rodrigues Nogueira","Sanar","2026-06-19",0,1],["Sarah Prado","Turbi","2026-06-26",0,1],["Gabriela Dias","Turbi","2026-06-26",0,1]]};
+
+var P1=[["Stone",79,22,57,27.8],["CorPay",54,8,46,14.8],["Magazine Luiza",54,28,26,51.9],["XP Inc",32,15,17,46.9],["Flash",28,13,15,46.4],["Ambev NE",27,4,23,14.8],["Hotmart",16,1,15,6.2],["Reclame Aqui",13,8,5,61.5],["Anota AI",12,5,7,41.7],["Quinto Andar",12,4,8,33.3],["Neon",11,3,8,27.3],["Rappi",10,3,7,30.0],["Cobli",9,1,8,11.1],["Arco",9,6,3,66.7],["Unico",8,3,5,37.5],["Koin",8,5,3,62.5],["Bionexo",8,0,8,0.0],["Keego",8,5,3,62.5],["Alice",7,3,4,42.9],["Frete.com",7,4,3,57.1],["FMU",7,5,2,71.4],["Contabilizei",7,0,7,0.0],["ZUP",7,5,2,71.4],["Árvore",7,5,2,71.4],["Sumup",7,2,5,28.6],["Strada",6,0,6,0.0],["Nuvemshop",6,3,3,50.0],["Loft",6,1,5,16.7],["Toro",6,0,6,0.0],["Mattos Filho",5,0,5,0.0],["ClearSale",5,1,4,20.0],["Alelo",5,2,3,40.0],["Ambev Corp",5,1,4,20.0],["Conexa",5,1,4,20.0],["GreenCare",5,0,5,0.0],["Salu",4,4,0,100.0],["Alura",4,0,4,0.0],["Comm",4,0,4,0.0],["Datora",3,2,1,66.7],["Sanar",3,0,3,0.0],["UME",3,2,1,66.7],["LivUp",3,2,1,66.7],["Blue Healt",3,0,3,0.0],["LWSA",2,2,0,100.0],["Conta Simples",2,2,0,100.0],["ClickSign",2,1,1,50.0],["Caju",2,2,0,100.0],["AvenueCode",2,0,2,0.0],["Azos",2,2,0,100.0],["Celcoin",2,0,2,0.0],["Jeitto",2,1,1,50.0],["Gabriel",2,1,1,50.0],["Intelipost",2,2,0,100.0],["SIS",2,0,2,0.0],["Zé Delivery",2,0,2,0.0],["Act",1,0,1,0.0],["Cerc",1,0,1,0.0],["Integration",1,1,0,100.0],["Expresso Nepomuceno",1,0,1,0.0],["CI T",1,1,0,100.0],["Liber Capital",1,0,1,0.0],["Sallve",1,1,0,100.0],["Pipo",1,1,0,100.0],["Swile",1,0,1,0.0],["Seedz",1,1,0,100.0],["Turbi",1,1,0,100.0],["Trela",1,1,0,100.0],["Wise",1,1,0,100.0],["Vitat",1,1,0,100.0]];
+
+function sp(id,btn){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
+
+function bc(v){return v>=40?'bh':v>=20?'bm':v>0?'bl2':'bn';}
+
+var G='#16a34a',GL='rgba(22,163,74,0.15)',B='#2563eb',BL='rgba(37,99,235,0.12)',GR='#94a3b8';
+var TO=['2T25','3T25','4T25','1T26','2T26'],TC={'2T25':'#6366f1','3T25':'#f59e0b','4T25':'#10b981','1T26':'#3b82f6','2T26':'#ec4899'};
+
+new Chart(document.getElementById('c1'),{type:'line',data:{labels:['2024','2025','2026*'],datasets:[{data:[50.0,30.2,44.1],borderColor:G,backgroundColor:'rgba(22,163,74,0.08)',borderWidth:2.5,pointRadius:5,pointBackgroundColor:G,fill:true,tension:0.3,label:'Taxa (%)'}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:70,ticks:{callback:function(v){return v+'%';}},grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}}});
+new Chart(document.getElementById('c2'),{type:'bar',data:{labels:['2024','2025','2026*'],datasets:[{label:'Efetivados',data:[16,105,75],backgroundColor:G,borderRadius:3},{label:'Concluidos',data:[16,243,95],backgroundColor:GL,borderColor:G,borderWidth:1,borderRadius:3}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}}});
+new Chart(document.getElementById('c3'),{type:'bar',data:{labels:P1.map(function(e){return e[0];}),datasets:[{label:'Com desfecho',data:P1.map(function(e){return e[1];}),backgroundColor:GL,borderColor:G,borderWidth:1,borderRadius:3},{label:'Efetivados',data:P1.map(function(e){return e[2];}),backgroundColor:G,borderRadius:3}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{x:{beginAtZero:true,grid:{color:'#f0f0f0'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+
+function ft(btn,f){
+  btn.closest('.tabs').querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  var tb=document.getElementById('tb1');tb.innerHTML='';
+  P1.filter(function(e){return f==='all'||(f==='h'&&e[4]>=40)||(f==='m'&&e[4]>=20&&e[4]<40)||(f==='l'&&e[4]>0&&e[4]<20)||(f==='z'&&e[4]===0);})
+  .forEach(function(e){tb.innerHTML+='<tr><td><b>'+e[0]+'</b></td><td>'+e[1]+'</td><td>'+e[3]+'</td><td>'+e[2]+'</td><td><span class="bx '+bc(e[4])+'">'+e[4].toFixed(1)+'%</span></td></tr>';});
+}
+ft(document.querySelector('#p1 .tab'),'all');
+
+// P2
+function buildTri(){
+  var cards=document.getElementById('tcards'),dets=document.getElementById('tdets');
+  TO.forEach(function(tri,i){
+    var d=TRI[tri],col=TC[tri];
+    var fcBadge=d.forecast?'<span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;margin-left:6px">FORECAST</span>':'';
+    var c=document.createElement('div');
+    c.className='tc'+(i===0?' on':'');c.id='tc_'+tri;
+    c.onclick=function(){selT(tri);};
+    var subTxt=d.forecast
+      ? d.ef+' ef. / '+d.total+' eleg. ('+d.and+' em and.)'
+      : d.ef+' ef. / '+d.total+' eleg.';
+    c.innerHTML='<div class="tclb">'+tri+fcBadge+'</div><div class="tcv" style="color:'+col+'">'+d.taxa+'%</div><div class="tcs">'+subTxt+'</div>';
+    cards.appendChild(c);
+    var dt=document.createElement('div');
+    dt.className='det card full'+(i===0?' on':'');dt.id='dt_'+tri;
+    var er=d.emp.map(function(e){
+      var andCol=e[4]>0?'<td style="color:#d97706;font-weight:600">'+e[4]+'</td>':'<td>0</td>';
+      return '<tr><td><b>'+e[0]+'</b></td><td>'+e[1]+'</td><td>'+e[2]+'</td><td>'+(e[1]-e[2]-e[4])+'</td>'+andCol+'<td><span class="bx '+bc(e[3])+'">'+e[3].toFixed(1)+'%</span></td></tr>';
+    }).join('');
+    var empHead=d.forecast
+      ? '<tr><th>Empresa</th><th>Eleg.</th><th>Efetivados</th><th>Concluidos</th><th style="color:#d97706">Em andamento</th><th>Taxa atual</th></tr>'
+      : '<tr><th>Empresa</th><th>Eleg.</th><th>Efetivados</th><th>Concluidos</th><th>Taxa</th></tr>';
+    if(!d.forecast){
+      er=d.emp.map(function(e){return '<tr><td><b>'+e[0]+'</b></td><td>'+e[1]+'</td><td>'+e[2]+'</td><td>'+(e[1]-e[2])+'</td><td><span class="bx '+bc(e[3])+'">'+e[3].toFixed(1)+'%</span></td></tr>';}).join('');
+    }
+    var jr=d.jov.map(function(j){
+      var isAnd=j[4]===1;
+      var rc=j[3]?' class="er"':(isAnd?' style="background:#fffbeb"':'');
+      var bs=j[3]?'bef':(isAnd?'':'bco');
+      var bt=j[3]?'&#10003; efetivado':(isAnd?'<span style="background:#fef3c7;color:#92400e;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:700">em andamento</span>':'concluido');
+      return '<tr'+rc+'><td>'+j[0]+'</td><td>'+j[1]+'</td><td>'+j[2]+'</td><td>'+bt+'</td></tr>';
+    }).join('');
+    var forecastNote=d.forecast
+      ? '<div style="background:#fffbeb;border:1px solid #fbbf24;border-radius:7px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#92400e"><b>Projecao parcial:</b> '+d.and+' jovens ainda em andamento entram no denominador pois seus contratos vencem neste trimestre. Taxa atual = '+d.ef+' efetivados / '+d.total+' elegiveis.</div>'
+      : '';
+    dt.innerHTML='<h3>'+tri+(d.forecast?' &mdash; <span style="color:#ec4899">Projecao Parcial</span>':' &mdash; Detalhamento')+'</h3>'
+      +forecastNote
+      +'<div class="dsm">'
+      +'<div class="dst"><strong style="color:'+col+'">'+d.taxa+'%</strong><span>'+(d.forecast?'taxa atual (forecast)':'taxa')+'</span></div>'
+      +'<div class="dst"><strong>'+d.ef+'</strong><span>efetivados</span></div>'
+      +(d.forecast?'<div class="dst"><strong style="color:#d97706">'+d.and+'</strong><span>em andamento</span></div>':'')
+      +'<div class="dst"><strong>'+(d.total-d.ef-(d.forecast?d.and:0))+'</strong><span>concluidos s/ efetivacao</span></div>'
+      +'<div class="dst"><strong>'+d.total+'</strong><span>elegiveis</span></div>'
+      +'</div>'
+      +'<div class="d2">'
+      +'<div><h3 style="margin-bottom:10px">Por empresa</h3><div class="tw"><table><thead>'+empHead+'</thead><tbody>'+er+'</tbody></table></div></div>'
+      +'<div><h3 style="margin-bottom:10px">Auditoria ('+d.total+' jovens)</h3>'
+      +'<input class="sb" data-tri="'+tri+'" placeholder="Buscar nome ou empresa..." oninput="fa(this)">'
+      +'<div class="asc tw"><table><thead><tr><th>Nome</th><th>Empresa</th><th>Fim</th><th>Status</th></tr></thead><tbody id="au_'+tri+'">'+jr+'</tbody></table></div>'
+      +'</div></div>';
+    dets.appendChild(dt);
+  });
+}
+function selT(tri){
+  document.querySelectorAll('.tc').forEach(function(c){c.classList.remove('on');});
+  document.querySelectorAll('.det').forEach(function(d){d.classList.remove('on');});
+  document.getElementById('tc_'+tri).classList.add('on');
+  document.getElementById('dt_'+tri).classList.add('on');
+}
+function fa(inp){
+  var tri=inp.dataset.tri, q=inp.value.toLowerCase();
+  document.querySelectorAll('#au_'+tri+' tr').forEach(function(r){r.style.display=r.innerText.toLowerCase().indexOf(q)>=0?'':'none';});
+}
+buildTri();
+
+new Chart(document.getElementById('c4'),{type:'bar',data:{labels:TO,datasets:[{label:'Efetivados',data:TO.map(function(t){return TRI[t].ef;}),backgroundColor:TO.map(function(t){return TC[t];}),borderRadius:4},{label:'Concluidos s/ efetivacao',data:TO.map(function(t){return TRI[t].total-TRI[t].ef;}),backgroundColor:'rgba(148,163,184,0.3)',borderColor:GR,borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}}});
+</script>
+</body></html>
