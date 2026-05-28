@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leapy - Taxa de Efetivacao</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f0f2f5;color:#1d1d1f;font-size:14px}
+nav{position:sticky;top:0;z-index:100;background:#1e293b;display:flex;align-items:center;padding:0 24px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.logo{font-size:17px;font-weight:800;color:#60a5fa;padding:15px 18px 15px 0;border-right:1px solid #334155;margin-right:4px}
+.nb{padding:15px 20px;font-size:13px;font-weight:500;color:#94a3b8;cursor:pointer;border-bottom:3px solid transparent}
+.nb:hover{color:#e2e8f0}.nb.on{color:#fff;border-bottom-color:#3b82f6}
+.pg{display:none}.pg.on{display:block}
+.hd{background:#fff;border-bottom:1px solid #e5e7eb;padding:18px 30px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.hd h1{font-size:17px;font-weight:700;color:#1e293b}
+.hd p{font-size:12px;color:#64748b;margin-top:3px;line-height:1.5;max-width:650px}
+.tag{border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;flex-shrink:0}
+.tg{background:#dcfce7;color:#166534}.tb{background:#dbeafe;color:#1e40af}
+.wrap{max-width:1260px;margin:0 auto;padding:22px 30px}
+.excl{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 16px;margin-bottom:18px;font-size:12px;color:#64748b}
+.excl-t{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#94a3b8;margin-bottom:8px}
+.excl-r{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:4px 10px;display:flex;align-items:center;gap:6px}
+.chip span{padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700;font-family:monospace}
+.cr{background:#fee2e2;color:#b91c1c}.co{background:#fef3c7;color:#92400e}.cp{background:#ede9fe;color:#6d28d9}
+.krow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.kcard{background:#fff;border-radius:8px;padding:18px 20px;border:1px solid #e5e7eb}
+.kcard .kl{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.kcard .kv{font-size:28px;font-weight:800;line-height:1}
+.kcard .ks{font-size:11px;color:#94a3b8;margin-top:4px}
+.vb .kv{color:#2563eb}.vg .kv{color:#16a34a}.va .kv{color:#d97706}.vs .kv{color:#475569}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.card{background:#fff;border-radius:8px;padding:20px;border:1px solid #e5e7eb}
+.card.full{grid-column:1/-1}
+.card h3{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+canvas{max-height:260px}
+.fn{font-size:10px;color:#94a3b8;margin-top:8px}
+.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tab{padding:4px 12px;border-radius:16px;border:1px solid #e2e8f0;font-size:11px;cursor:pointer;background:#fff;color:#64748b}
+.tab.on{background:#2563eb;color:#fff;border-color:#2563eb}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:7px 10px;font-size:10px;text-transform:uppercase;color:#94a3b8;border-bottom:1px solid #e5e7eb;white-space:nowrap}
+td{padding:7px 10px;border-bottom:1px solid #f1f5f9}
+tr:hover td{background:#f8fafc}
+.bx{display:inline-block;padding:1px 7px;border-radius:12px;font-size:11px;font-weight:700}
+.bh{background:#dcfce7;color:#166534}.bm{background:#fef9c3;color:#92400e}
+.bl2{background:#fee2e2;color:#b91c1c}.bn{background:#f1f5f9;color:#475569}
+.bef{background:#dcfce7;color:#166534}.bco{background:#f1f5f9;color:#475569}
+.tgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
+.tc{background:#fff;border-radius:8px;border:2px solid #e5e7eb;padding:14px 16px;cursor:pointer;transition:border-color .15s}
+.tc:hover{border-color:#60a5fa}.tc.on{border-color:#3b82f6;background:#eff6ff}
+.tclb{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.tcv{font-size:24px;font-weight:800;line-height:1}
+.tcs{font-size:11px;color:#94a3b8;margin-top:4px}
+.det{display:none}.det.on{display:block}
+.dsm{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.dst{background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:9px 14px}
+.dst strong{display:block;font-size:18px;font-weight:800;color:#1e293b}
+.dst span{font-size:10px;color:#94a3b8}
+.d2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.sb{width:100%;padding:7px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:12px;margin-bottom:10px;outline:none}
+.sb:focus{border-color:#3b82f6}
+.asc{max-height:400px;overflow-y:auto}
+tr.er td{background:#f0fdf4}
+tr.er:hover td{background:#dcfce7}
+.info{background:#fff;border-left:4px solid #10b981;border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:18px;font-size:12px;color:#374151;line-height:1.6}
+.info.bl{border-left-color:#3b82f6}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">leapy</div>
+  <div class="nb on" onclick="sp('p1',this)">Taxa de Efetiva&#231;&#227;o</div>
+  
+</nav>
+
+<!-- PAGE 1 -->
+<div class="pg on" id="p1">
+  <div class="hd">
+    <div>
+      <h1>Taxa de Efetiva&#231;&#227;o Hist&#243;rica</h1>
+      <p>Jovens efetivados pelas empresas parceiras ao final do contrato de aprendizagem.</p>
+    </div>
+    <span class="tag tg">Hist&#243;rico</span>
+  </div>
+  <div class="wrap">
+    <div class="excl">
+      <div class="excl-t">Crit&#233;rios de inclus&#227;o</div>
+      <div class="excl-r">
+        <div class="chip"><span class="cr">cancelado</span> exclu&#237;do</div>
+        <div class="chip"><span class="cr">desistiu</span> exclu&#237;do</div>
+        <div class="chip"><span class="co">n&#227;o iniciado / pausado / f&#233;rias</span> exclu&#237;do</div>
+        <div class="chip"><span class="cp">Mercado Livre</span> exclu&#237;do</div>
+        <div class="chip" style="color:#1e293b;font-weight:600">Base: 970 contratos finalizados</div>
+      </div>
+    </div>
+    <div class="krow">
+      <div class="kcard vb"><div class="kl">Contratos finalizados</div><div class="kv">970</div><div class="ks">conclu&#237;do (663) + efetivado (307)</div></div>
+      <div class="kcard vg"><div class="kl">Efetivados</div><div class="kv">307</div><div class="ks">confirmados pelas empresas</div></div>
+      <div class="kcard va"><div class="kl">Taxa de Efetiva&#231;&#227;o</div><div class="kv">31.6%</div><div class="ks">efetivados / contratos finalizados</div></div>
+      <div class="kcard vs"><div class="kl">Em andamento</div><div class="kv">803</div><div class="ks">contratos ativos</div></div>
+    </div>
+    <div class="g2">
+      <div class="card full">
+        <h3>Evolu&#231;&#227;o da taxa por ano &mdash; com vs. sem Grupo Botic&#225;rio</h3>
+        <canvas id="c1"></canvas>
+        <p class="fn">* 2026 parcial &mdash; contratos ainda ativos entrar&#227;o na base quando conclu&#237;dos</p>
+      </div>
+    </div>
+    <div class="card full">
+      <h3>Taxa por empresa</h3>
+      <div class="tabs">
+        <button class="tab on" onclick="ft(this,'all')">Todas</button>
+        <button class="tab" onclick="ft(this,'h')">&#8805;50%</button>
+        <button class="tab" onclick="ft(this,'m')">20&#8211;50%</button>
+        <button class="tab" onclick="ft(this,'l')">1&#8211;20%</button>
+        <button class="tab" onclick="ft(this,'z')">0%</button>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>Empresa</th><th>Contratos finalizados</th><th>Conclu&#237;dos</th><th>Efetivados</th><th>Taxa</th></tr></thead>
+        <tbody id="tb1"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+var P1=[["Intelipost",2,2,0,100.0],["Integration",1,1,0,100.0],["Conta Simples",2,2,0,100.0],["CI T",1,1,0,100.0],["Caju",2,2,0,100.0],["Azos",2,2,0,100.0],["Seedz",1,1,0,100.0],["Turbi",1,1,0,100.0],["Trela",1,1,0,100.0],["Wise",1,1,0,100.0],["Pipo",1,1,0,100.0],["Sallve",1,1,0,100.0],["Salu",4,4,0,100.0],["Vitat",1,1,0,100.0],["LWSA",2,2,0,100.0],["ZUP",7,5,2,71.4],["Árvore",7,5,2,71.4],["FMU",7,5,2,71.4],["UME",3,2,1,66.7],["Arco",9,6,3,66.7],["Datora",3,2,1,66.7],["LivUp",3,2,1,66.7],["Keego",8,5,3,62.5],["Koin",8,5,3,62.5],["Reclame Aqui",13,8,5,61.5],["Frete.com",7,4,3,57.1],["Magazine Luiza",54,28,26,51.9],["ClickSign",2,1,1,50.0],["Gabriel",2,1,1,50.0],["Nuvemshop",6,3,3,50.0],["Jeitto",2,1,1,50.0],["XP Inc",32,15,17,46.9],["Flash",28,13,15,46.4],["Alice",7,3,4,42.9],["Anota AI",12,5,7,41.7],["Alelo",5,2,3,40.0],["Unico",8,3,5,37.5],["Quinto Andar",12,4,8,33.3],["Rappi",10,3,7,30.0],["Sumup",7,2,5,28.6],["Stone",79,22,57,27.8],["Neon",11,3,8,27.3],["Grupo Boticário",404,108,296,26.7],["Conexa",5,1,4,20.0],["ClearSale",5,1,4,20.0],["Ambev Corp",5,1,4,20.0],["Loft",6,1,5,16.7],["CorPay",54,8,46,14.8],["Ambev NE",27,4,23,14.8],["Cobli",9,1,8,11.1],["Hotmart",16,1,15,6.2],["Act",1,0,1,0.0],["Alura",4,0,4,0.0],["AvenueCode",2,0,2,0.0],["GreenCare",5,0,5,0.0],["Contabilizei",7,0,7,0.0],["Expresso Nepomuceno",1,0,1,0.0],["Blue Healt",3,0,3,0.0],["Bionexo",8,0,8,0.0],["Cerc",1,0,1,0.0],["Celcoin",2,0,2,0.0],["Comm",4,0,4,0.0],["Sanar",3,0,3,0.0],["SIS",2,0,2,0.0],["Liber Capital",1,0,1,0.0],["Mattos Filho",5,0,5,0.0],["Swile",1,0,1,0.0],["Toro",6,0,6,0.0],["Strada",6,0,6,0.0],["Zé Delivery",2,0,2,0.0]];
+
+var ANOS_COM=[50.0, 30.3, 33.9];
+var ANOS_SEM=[50.0, 30.2, 44.1];
+var EMP_LABELS=['Intelipost', 'Integration', 'Conta Simples', 'CI T', 'Caju', 'Azos', 'Seedz', 'Turbi', 'Trela', 'Wise', 'Pipo', 'Sallve', 'Salu', 'Vitat', 'LWSA', 'ZUP', 'Árvore', 'FMU', 'UME', 'Arco', 'Datora', 'LivUp', 'Keego', 'Koin', 'Reclame Aqui', 'Frete.com', 'Magazine Luiza', 'ClickSign', 'Gabriel', 'Nuvemshop', 'Jeitto', 'XP Inc', 'Flash', 'Alice', 'Anota AI', 'Alelo', 'Unico', 'Quinto Andar', 'Rappi', 'Sumup', 'Stone', 'Neon', 'Grupo Boticário', 'Conexa', 'ClearSale', 'Ambev Corp', 'Loft', 'CorPay', 'Ambev NE', 'Cobli', 'Hotmart', 'Act', 'Alura', 'AvenueCode', 'GreenCare', 'Contabilizei', 'Expresso Nepomuceno', 'Blue Healt', 'Bionexo', 'Cerc', 'Celcoin', 'Comm', 'Sanar', 'SIS', 'Liber Capital', 'Mattos Filho', 'Swile', 'Toro', 'Strada', 'Zé Delivery'];
+var EMP_TAXAS=[100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 71.4, 71.4, 71.4, 66.7, 66.7, 66.7, 66.7, 62.5, 62.5, 61.5, 57.1, 51.9, 50.0, 50.0, 50.0, 50.0, 46.9, 46.4, 42.9, 41.7, 40.0, 37.5, 33.3, 30.0, 28.6, 27.8, 27.3, 26.7, 20.0, 20.0, 20.0, 16.7, 14.8, 14.8, 11.1, 6.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+var EMP_EFS=[2, 1, 2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 4, 1, 2, 5, 5, 5, 2, 6, 2, 2, 5, 5, 8, 4, 28, 1, 1, 3, 1, 15, 13, 3, 5, 2, 3, 4, 3, 2, 22, 3, 108, 1, 1, 1, 1, 8, 4, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var EMP_TOTS=[2, 1, 2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 4, 1, 2, 7, 7, 7, 3, 9, 3, 3, 8, 8, 13, 7, 54, 2, 2, 6, 2, 32, 28, 7, 12, 5, 8, 12, 10, 7, 79, 11, 404, 5, 5, 5, 6, 54, 27, 9, 16, 1, 4, 2, 5, 7, 1, 3, 8, 1, 2, 4, 3, 2, 1, 5, 1, 6, 6, 2];
+
+function sp(id,btn){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
+
+function bc(v){return v>=50?'bh':v>=20?'bm':v>0?'bl2':'bn';}
+
+
+
+
+// C1 — linha com/sem GB
+new Chart(document.getElementById('c1'),{
+  type:'line',
+  data:{
+    labels:['2024','2025','2026*'],
+    datasets:[
+      {label:'Sem Grupo Botic\u00e1rio',data:ANOS_SEM,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.07)',borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#2563eb',fill:true,tension:0.3},
+      {label:'Com Grupo Botic\u00e1rio',data:ANOS_COM,borderColor:'#f59e0b',backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,4],pointRadius:4,pointBackgroundColor:'#f59e0b',fill:false,tension:0.3}
+    ]
+  },
+  options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{beginAtZero:true,max:70,ticks:{callback:function(v){return v+'%';}},grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}}
+});
+
+// P1 tabela
+function ft(btn,f){
+  btn.closest('.tabs').querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  var tb=document.getElementById('tb1');tb.innerHTML='';
+  P1.filter(function(e){return f==='all'||(f==='h'&&e[4]>=50)||(f==='m'&&e[4]>=20&&e[4]<50)||(f==='l'&&e[4]>0&&e[4]<20)||(f==='z'&&e[4]===0);})
+  .forEach(function(e){tb.innerHTML+='<tr><td><b>'+e[0]+'</b></td><td>'+e[1]+'</td><td>'+e[3]+'</td><td>'+e[2]+'</td><td><span class="bx '+bc(e[4])+'">'+e[4].toFixed(1)+'%</span></td></tr>';});
+}
+ft(document.querySelector('#p1 .tab'),'all');
+
+
+</script>
+</body></html>
