@@ -83,8 +83,7 @@ tr.er:hover td{background:#dcfce7}
   <div class="hd">
     <div>
       <h1>Taxa de Efetiva&#231;&#227;o </h1>
-      <p>Apenas jovens que j&#225; conclu&#237;ram a jornada. Em andamento exclu&#237;dos do denominador.</p>
-    </div>
+      </div>
     <span class="tag tg">Conclu&#237;do + Efetivado</span>
   </div>
   <div class="wrap">
@@ -94,15 +93,12 @@ tr.er:hover td{background:#dcfce7}
         <div class="chip"><span class="cr">cancelado</span> 318 jovens</div>
         <div class="chip"><span class="cr">desistiu</span> 176 jovens</div>
         <div class="chip"><span class="co">nao_iniciado / pausado / ferias / sem status</span> 51 jovens</div>
-        <div class="chip"><span class="cp">Grupo Botic&#225;rio</span> empresa exclu&#237;da</div>
-        <div class="chip"><span class="cp">Mercado Livre</span> empresa exclu&#237;da</div>
         <div class="chip" style="color:#1e293b;font-weight:600">Base ajustada: 1.133 jovens</div>
       </div>
     </div>
     <div class="info">
       <b>Taxa (35,2%):</b> dos 566 jovens que j&#225; encerraram o programa, 199 foram efetivados.
       Os 567 em andamento s&#227;o exclu&#237;dos do denominador &mdash; quando terminarem, atualizam essa taxa.
-      Taxa macro seria 17,6% se inclu&#237;ssemos os em andamento.
     </div>
     <div class="krow">
       <div class="kcard vb"><div class="kl">Com desfecho</div><div class="kv">566</div><div class="ks">concluido (367) + efetivado (199)</div></div>
@@ -111,9 +107,9 @@ tr.er:hover td{background:#dcfce7}
       <div class="kcard vs"><div class="kl">Em andamento</div><div class="kv">567</div><div class="ks">exclu&#237;dos do denominador</div></div>
     </div>
     <div class="g2">
-      <div class="card"><h3>Taxa por ano</h3><canvas id="c1"></canvas><p class="fn">* 2026 parcial</p></div>
+      <div class="card"><h3>Taxa por ano &mdash; com vs. sem Botic&#225;rio</h3><canvas id="c1"></canvas><p class="fn">* 2026 parcial</p></div>
       <div class="card"><h3>Efetivados x Conclu&#237;dos por ano</h3><canvas id="c2"></canvas></div>
-      <div class="card full"><h3>Por empresa &mdash; efetivados vs com desfecho</h3><canvas id="c3" style="max-height:320px"></canvas></div>
+      <div class="card full"><h3>Taxa de efetiva&#231;&#227;o por empresa (ordenado por taxa)</h3><canvas id="c3" style="max-height:600px"></canvas></div>
     </div>
     <div class="card full">
       <h3>Detalhamento por empresa</h3>
@@ -176,9 +172,40 @@ function bc(v){return v>=40?'bh':v>=20?'bm':v>0?'bl2':'bn';}
 var G='#16a34a',GL='rgba(22,163,74,0.15)',B='#2563eb',BL='rgba(37,99,235,0.12)',GR='#94a3b8';
 var TO=['2T25','3T25','4T25','1T26','2T26'],TC={'2T25':'#6366f1','3T25':'#f59e0b','4T25':'#10b981','1T26':'#3b82f6','2T26':'#ec4899'};
 
-new Chart(document.getElementById('c1'),{type:'line',data:{labels:['2024','2025','2026*'],datasets:[{data:[50.0,30.2,44.1],borderColor:G,backgroundColor:'rgba(22,163,74,0.08)',borderWidth:2.5,pointRadius:5,pointBackgroundColor:G,fill:true,tension:0.3,label:'Taxa (%)'}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:70,ticks:{callback:function(v){return v+'%';}},grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}}});
+new Chart(document.getElementById('c1'),{type:'line',data:{labels:['2024','2025','2026*'],datasets:[{label:'Sem Boticario',data:[50.0,30.2,44.1],borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.07)',borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#2563eb',fill:true,tension:0.3},{label:'Com Boticario',data:[24.0,30.3,33.9],borderColor:'#f59e0b',backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,4],pointRadius:4,pointBackgroundColor:'#f59e0b',fill:false,tension:0.3}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{beginAtZero:true,max:70,ticks:{callback:function(v){return v+'%';}},grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}}});
 new Chart(document.getElementById('c2'),{type:'bar',data:{labels:['2024','2025','2026*'],datasets:[{label:'Efetivados',data:[16,105,75],backgroundColor:G,borderRadius:3},{label:'Concluidos',data:[16,243,95],backgroundColor:GL,borderColor:G,borderWidth:1,borderRadius:3}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}}});
-new Chart(document.getElementById('c3'),{type:'bar',data:{labels:P1.map(function(e){return e[0];}),datasets:[{label:'Com desfecho',data:P1.map(function(e){return e[1];}),backgroundColor:GL,borderColor:G,borderWidth:1,borderRadius:3},{label:'Efetivados',data:P1.map(function(e){return e[2];}),backgroundColor:G,borderRadius:3}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{x:{beginAtZero:true,grid:{color:'#f0f0f0'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+new Chart(document.getElementById('c3'),{
+  type:'bar',
+  data:{
+    labels:["Salu", "LWSA", "Conta Simples", "Caju", "Azos", "Intelipost", "Integration", "CI T", "Sallve", "Pipo", "Seedz", "Turbi", "Trela", "Wise", "Vitat", "FMU", "ZUP", "Árvore", "Arco", "Datora", "UME", "LivUp", "Koin", "Keego", "Reclame Aqui", "Frete.com", "Magazine Luiza", "Nuvemshop", "ClickSign", "Jeitto", "Gabriel", "XP Inc", "Flash", "Alice", "Anota AI", "Alelo", "Unico", "Quinto Andar", "Rappi", "Sumup", "Stone", "Neon", "ClearSale", "Ambev Corp", "Conexa", "Loft", "CorPay", "Ambev NE", "Cobli", "Hotmart", "Bionexo", "Contabilizei", "Strada", "Toro", "Mattos Filho", "GreenCare", "Alura", "Comm", "Sanar", "Blue Healt", "AvenueCode", "Celcoin", "SIS", "Zé Delivery", "Act", "Cerc", "Expresso Nepomuceno", "Liber Capital", "Swile"],
+    datasets:[{
+      label:'Taxa de Efetivacao (%)',
+      data:[100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 71.4, 71.4, 71.4, 66.7, 66.7, 66.7, 66.7, 62.5, 62.5, 61.5, 57.1, 51.9, 50.0, 50.0, 50.0, 50.0, 46.9, 46.4, 42.9, 41.7, 40.0, 37.5, 33.3, 30.0, 28.6, 27.8, 27.3, 20.0, 20.0, 20.0, 16.7, 14.8, 14.8, 11.1, 6.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      backgroundColor:function(ctx){
+        var v=ctx.raw;
+        return v>=50?'#16a34a':v>=30?'#2563eb':v>=15?'#f59e0b':'#e5e7eb';
+      },
+      borderRadius:3
+    }]
+  },
+  options:{
+    responsive:true,
+    indexAxis:'y',
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{
+        label:function(ctx){
+          var i=ctx.dataIndex;
+          return ' '+ctx.raw+'%  ('+[4, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 5, 6, 2, 2, 2, 5, 5, 8, 4, 28, 3, 1, 1, 1, 15, 13, 3, 5, 2, 3, 4, 3, 2, 22, 3, 1, 1, 1, 1, 8, 4, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0][i]+' efetivados / '+[4, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 7, 7, 7, 9, 3, 3, 3, 8, 8, 13, 7, 54, 6, 2, 2, 2, 32, 28, 7, 12, 5, 8, 12, 10, 7, 79, 11, 5, 5, 5, 6, 54, 27, 9, 16, 8, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 2, 2, 1, 1, 1, 1, 1][i]+' contratos)';
+        }
+      }}
+    },
+    scales:{
+      x:{beginAtZero:true,max:100,ticks:{callback:function(v){return v+'%';}},grid:{color:'#f0f0f0'}},
+      y:{grid:{display:false},ticks:{font:{size:11}}}
+    }
+  }
+});
 
 function ft(btn,f){
   btn.closest('.tabs').querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});
@@ -255,6 +282,6 @@ function fa(inp){
 }
 buildTri();
 
-new Chart(document.getElementById('c4'),{type:'bar',data:{labels:TO,datasets:[{label:'Efetivados',data:TO.map(function(t){return TRI[t].ef;}),backgroundColor:TO.map(function(t){return TC[t];}),borderRadius:4},{label:'Concluidos s/ efetivacao',data:TO.map(function(t){return TRI[t].total-TRI[t].ef;}),backgroundColor:'rgba(148,163,184,0.3)',borderColor:GR,borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}}});
+new Chart(document.getElementById('c4'),{type:'bar',data:{labels:TO,datasets:[{label:'Sem Boticario',data:[24.2,34.3,21.2,30.2,62.9],backgroundColor:'rgba(37,99,235,0.75)',borderRadius:4},{label:'Com Boticario',data:[28.0,32.5,22.6,21.3,64.1],backgroundColor:'rgba(245,158,11,0.75)',borderRadius:4}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},scales:{y:{beginAtZero:true,max:80,ticks:{callback:function(v){return v+'%';}},grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}}});
 </script>
 </body></html>
