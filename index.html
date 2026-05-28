@@ -74,7 +74,7 @@ tr.er:hover td{background:#dcfce7}
 <nav>
   <div class="logo">leapy</div>
   <div class="nb on" onclick="sp('p1',this)">Taxa de Efetiva&#231;&#227;o</div>
-  <div class="nb" onclick="sp('p2',this)">Por Trimestre</div>
+  
 </nav>
 
 <!-- PAGE 1 -->
@@ -124,85 +124,6 @@ tr.er:hover td{background:#dcfce7}
         <tbody id="tb1"></tbody>
       </table></div>
     </div>
-  </div>
-</div>
-
-<!-- PAGE 2 -->
-<div class="pg" id="p2">
-  <div class="hd">
-    <div>
-      <h1>Taxa de Efetiva&#231;&#227;o por Trimestre</h1>
-      <p>Jovens com fim de contrato dentro do trimestre. Numerador: efetivados. Denominador: contratos finalizados (efetivado + conclu&#237;do).</p>
-    </div>
-    <span class="tag tb">&#218;ltimos 5 trimestres</span>
-  </div>
-  <div class="wrap">
-    <div class="info bl">
-      Clique em um trimestre para ver o detalhamento completo. Efetivados aparecem em verde na lista de auditoria.
-    </div>
-    <div class="tgrid" id="tcards"></div>
-    <div class="card full" style="margin-bottom:16px">
-      <h3>Taxa por trimestre (%)</h3>
-      <canvas id="c4" style="max-height:220px"></canvas>
-    </div>
-    
-<div class="card full" style="margin-bottom:16px">
-  <h3>Impacto do Grupo Botic&#225;rio por trimestre</h3>
-  <div style="background:#fffbeb;border:1px solid #fbbf24;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#78350f;line-height:1.6">
-    <b>Por que o Botic&#225;rio oscila tanto?</b> Em geral, jovens do varejo t&#234;m menor taxa de efetiva&#231;&#227;o: o setor usa aprendizes de forma estrutural, mas raramente converte em contrata&#231;&#227;o efetiva. O impacto do Botic&#225;rio &#233; ep&#237;s&#243;dico: quando uma turma grande encerra sem efetiva&#231;&#245;es (como no 1T26, com 0 efetivados em 72 contratos), derruba a taxa do trimestre de forma expressiva. No acumulado anual esse efeito se dilui porque outras turmas compensam, da&#237; o gr&#225;fico anual parecer est&#225;vel enquanto o trimestral mostra oscila&#231;&#245;es bruscas.
-  </div>
-  <div class="tw">
-    <table>
-      <thead>
-        <tr>
-          <th>Trimestre</th>
-          <th style="color:#2563eb">Sem Botic&#225;rio</th>
-          <th style="color:#d97706">Com Botic&#225;rio</th>
-          <th>Impacto GB</th>
-          <th>O que aconteceu</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><b>2T25</b></td>
-          <td style="color:#2563eb">24,2% <span style="color:#94a3b8;font-size:11px">(16/66)</span></td>
-          <td style="color:#d97706">28,0% <span style="color:#94a3b8;font-size:11px">(47/168)</span></td>
-          <td><span class="bx bh">+3,8 p.p.</span></td>
-          <td style="font-size:11px;color:#64748b">GB efetivou bem neste trimestre</td>
-        </tr>
-        <tr>
-          <td><b>3T25</b></td>
-          <td style="color:#2563eb">34,3% <span style="color:#94a3b8;font-size:11px">(36/105)</span></td>
-          <td style="color:#d97706">32,5% <span style="color:#94a3b8;font-size:11px">(51/157)</span></td>
-          <td><span class="bx bl2">&#8722;1,8 p.p.</span></td>
-          <td style="font-size:11px;color:#64748b">GB ligeiramente abaixo da m&#233;dia</td>
-        </tr>
-        <tr>
-          <td><b>4T25</b></td>
-          <td style="color:#2563eb">21,2% <span style="color:#94a3b8;font-size:11px">(29/137)</span></td>
-          <td style="color:#d97706">22,6% <span style="color:#94a3b8;font-size:11px">(52/230)</span></td>
-          <td><span class="bx bh">+1,4 p.p.</span></td>
-          <td style="font-size:11px;color:#64748b">GB na m&#233;dia do trimestre</td>
-        </tr>
-        <tr style="background:#fff7ed">
-          <td><b>1T26</b></td>
-          <td style="color:#2563eb">30,2% <span style="color:#94a3b8;font-size:11px">(35/116)</span></td>
-          <td style="color:#d97706">21,3% <span style="color:#94a3b8;font-size:11px">(40/188)</span></td>
-          <td><span class="bx bl2" style="font-size:12px"><b>&#8722;8,9 p.p.</b></span></td>
-          <td style="font-size:11px;color:#92400e"><b>GB com 0 efetivados em 72 contratos finalizados</b></td>
-        </tr>
-        <tr style="background:#fdf4ff">
-          <td><b>2T26</b> <span style="background:#fef3c7;color:#92400e;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700">FORECAST</span></td>
-          <td style="color:#2563eb">23,9% <span style="color:#94a3b8;font-size:11px">(22/92)</span></td>
-          <td style="color:#d97706">16,9% <span style="color:#94a3b8;font-size:11px">(25/148)</span></td>
-          <td><span class="bx bl2">&#8722;7,0 p.p.</span></td>
-          <td style="font-size:11px;color:#64748b">GB tem 56 contratos no 2T26, dos quais 52 ainda em andamento</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-<div id="tdets"></div>
   </div>
 </div>
 
